@@ -48,27 +48,28 @@ resource "helm_release" "ingress-nginx" {
 
   set {
     name  = "ingressClassResource.default"
-    value = "true"
+    value = true
   }
 
   set {
     name  = "hostNetwork"
-    value = "false"
+    value = false
   }
 
   set {
     name  = "daemonset.useHostPort"
-    value = "true"
+    value = true
   }
 
   set {
     name  = "metrics.enabled"
-    value = "false" //TODO detect if prometheus is installed and set this value
+    value = false //TODO detect if prometheus is installed and set this value
+    type  = "string"
   }
 
   set {
     name  = "metrics.serviceMonitor.enabled"
-    value = "false" //TODO detect if prometheus is installed and set this value
+    value = false //TODO detect if prometheus is installed and set this value
   }
 
   set {
@@ -79,6 +80,6 @@ resource "helm_release" "ingress-nginx" {
 
   set {
     name  = "config.use-forwarded-headers"
-    value = "true"
+    value = true
   }
 }
