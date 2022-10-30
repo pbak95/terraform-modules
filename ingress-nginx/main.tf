@@ -1,5 +1,5 @@
 resource "helm_release" "ingress-nginx" {
-  name       = "ingress-nginx"
+  name       = "ingress"
   repository = "https://charts.bitnami.com/bitnami"
   chart      = "nginx-ingress-controller"
   version    = var.chart_version
@@ -63,7 +63,7 @@ resource "helm_release" "ingress-nginx" {
 
   set {
     name  = "metrics.enabled"
-    value = "true"
+    value = "false" //TODO detect if prometheus is installed and set this value
   }
 
   set {
