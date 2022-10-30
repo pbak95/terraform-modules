@@ -68,7 +68,7 @@ resource "helm_release" "ingress-nginx" {
 
   set {
     name  = "metrics.serviceMonitor.enabled"
-    value = "true"
+    value = "false" //TODO detect if prometheus is installed and set this value
   }
 
   set {
