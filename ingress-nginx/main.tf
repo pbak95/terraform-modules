@@ -18,32 +18,32 @@ resource "helm_release" "ingress-nginx" {
     value = "2"
   }
 
-  set {
-    name  = "affinity"
-    value = <<-EOT
-    podAntiAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchExpressions:
-          - key: app.kubernetes.io/name
-            operator: In
-            values:
-            - {{ .Chart.Name }}
-          - key: app.kubernetes.io/instance
-            operator: In
-            values:
-            - {{ .Release.Name }}
-          - key: app.kubernetes.io/component
-            operator: In
-            values:
-            - controller
-          - key: helm.sh/chart
-            operator: In
-            values:
-            - {{ .Chart.Name }}-{{ .Chart.Version }}
-        topologyKey: "kubernetes.io/hostname"
-    EOT
-  }
+#  set {
+#    name  = "affinity"
+#    value = <<-EOT
+#    podAntiAffinity:
+#      requiredDuringSchedulingIgnoredDuringExecution:
+#      - labelSelector:
+#          matchExpressions:
+#          - key: app.kubernetes.io/name
+#            operator: In
+#            values:
+#            - {{ .Chart.Name }}
+#          - key: app.kubernetes.io/instance
+#            operator: In
+#            values:
+#            - {{ .Release.Name }}
+#          - key: app.kubernetes.io/component
+#            operator: In
+#            values:
+#            - controller
+#          - key: helm.sh/chart
+#            operator: In
+#            values:
+#            - {{ .Chart.Name }}-{{ .Chart.Version }}
+#        topologyKey: "kubernetes.io/hostname"
+#    EOT
+#  }
 
 
   set {
