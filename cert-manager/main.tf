@@ -19,10 +19,10 @@ resource "helm_release" "cert-manager" {
   }
   set {
     name  = "prometheus.enabled"
-    value = "true"
+    value = "false" //TODO detect if prometheus is installed and set this value
   }
   set {
     name  = "prometheus.servicemonitor.enabled"
-    value = "true"
+    value = "false" //TODO detect if prometheus is installed and set this value
   }
 }
