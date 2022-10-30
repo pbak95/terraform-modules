@@ -1,3 +1,7 @@
+locals {
+  manifests_path = "${path.module}/resources/generated-manifest.yaml"
+}
+
 resource "kubernetes_namespace" "istio-namespace" {
   metadata {
     annotations = {}
@@ -16,6 +20,6 @@ resource "kubernetes_namespace" "istio-namespace" {
 }
 
 resource "kubernetes_manifest" "istio-manifests" {
-  manifest = yamldecode(file("${path.module}/resources/generated-manifest.yaml"))
+  manifest = yamldecode(file(local.manifests_path))
   depends_on = [kubernetes_namespace.istio-namespace]
 }
