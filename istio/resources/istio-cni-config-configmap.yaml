@@ -1,0 +1,28 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: istio-cni-config
+  namespace: istio-system
+  labels:
+    app: istio-cni
+    release: istio
+    istio.io/rev: default
+    install.operator.istio.io/owning-resource: unknown
+    operator.istio.io/component: "Cni"
+data:
+  # The CNI network configuration to add to the plugin chain on each node.  The special
+  # values in this config will be automatically populated.
+  cni_network_config: |-
+        {
+          "cniVersion": "0.3.1",
+          "name": "istio-cni",
+          "type": "istio-cni",
+          "log_level": "debug",
+          "log_uds_address": "__LOG_UDS_ADDRESS__", 
+          "kubernetes": {
+              "kubeconfig": "__KUBECONFIG_FILEPATH__",
+              "cni_bin_dir": "/opt/cni/bin",
+              "exclude_namespaces": [ "istio-system", "kube-system" ]
+          }
+        }
+

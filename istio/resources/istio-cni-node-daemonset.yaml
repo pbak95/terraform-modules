@@ -1,0 +1,171 @@
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+  name: istio-cni-node
+  namespace: istio-system
+  labels:
+    k8s-app: istio-cni-node
+    release: istio
+    istio.io/rev: default
+    install.operator.istio.io/owning-resource: unknown
+    operator.istio.io/component: "Cni"
+spec:
+  selector:
+    matchLabels:
+      k8s-app: istio-cni-node
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        k8s-app: istio-cni-node
+        sidecar.istio.io/inject: "false"
+      annotations:
+        sidecar.istio.io/inject: "false"
+        # Add Prometheus Scrape annotations
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: "15014"
+        prometheus.io/path: '/metrics'
+        # Custom annotations
+    spec:
+      hostNetwork: true
+      nodeSelector:
+        kubernetes.io/os: linux
+      tolerations:
+        # Make sure istio-cni-node gets scheduled on all nodes.
+        - effect: NoSchedule
+          operator: Exists
+        # Mark the pod as a critical add-on for rescheduling.
+        - key: CriticalAddonsOnly
+          operator: Exists
+        - effect: NoExecute
+          operator: Exists
+      priorityClassName: system-node-critical
+      serviceAccountName: istio-cni
+      # Minimize downtime during a rolling upgrade or deletion; tell Kubernetes to do a "force
+      # deletion": https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods.
+      terminationGracePeriodSeconds: 5
+      containers:
+        # This container installs the Istio CNI binaries
+        # and CNI network config file on each node.
+        - name: install-cni
+          image: "gcr.io/istio-testing/install-cni:0.0.0-ambient.191fe680b52c1754ee72a06b3e0d3f9d116f2e82"
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8000
+          securityContext:
+            runAsGroup: 0
+            runAsUser: 0
+            runAsNonRoot: false
+            privileged: true
+            capabilities:
+              add: ["NET_ADMIN"]
+          command: ["install-cni"]
+          args:
+            - --log_output_level=default:info
+          env:
+            # The CNI network config to install on each node.
+            - name: CNI_NETWORK_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  name: istio-cni-config
+                  key: cni_network_config
+            - name: CNI_NET_DIR
+              value: /etc/cni/net.d
+            # Deploy as a standalone CNI plugin or as chained?
+            - name: CHAINED_CNI_PLUGIN
+              value: "true"
+            - name: REPAIR_ENABLED
+              value: "true"
+            - name: REPAIR_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: REPAIR_LABEL_PODS
+              value: "true"
+            # Set to true to enable pod deletion
+            - name: REPAIR_DELETE_PODS
+              value: "true"
+            - name: REPAIR_RUN_AS_DAEMON
+              value: "true"
+            - name: REPAIR_SIDECAR_ANNOTATION
+              value: "sidecar.istio.io/status"
+            - name: REPAIR_INIT_CONTAINER_NAME
+              value: "istio-validation"
+            - name: REPAIR_BROKEN_POD_LABEL_KEY
+              value: "cni.istio.io/uninitialized"
+            - name: REPAIR_BROKEN_POD_LABEL_VALUE
+              value: "true"
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+          volumeMounts:
+            - mountPath: /host/opt/cni/bin
+              name: cni-bin-dir
+            - mountPath: /host/etc/cni/net.d
+              name: cni-net-dir
+            - mountPath: /var/run/istio-cni
+              name: cni-log-dir
+            - mountPath: /etc/ambient-config
+              name: cni-ambientconfig
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                - sh
+                - -c
+                - |-
+                  iptables -t nat -F ztunnel-PREROUTING
+                  iptables -t nat -F ztunnel-POSTROUTING
+                  iptables -t mangle -F ztunnel-PREROUTING
+                  iptables -t mangle -F ztunnel-FOWARD
+                  iptables -t mangle -F ztunnel-INPUT
+                  iptables -t nat -D PREROUTING -j ztunnel-PREROUTING
+                  iptables -t nat -X ztunnel-PREROUTING
+                  iptables -t nat -D POSTROUTING -j ztunnel-POSTROUTING
+                  iptables -t nat -X ztunnel-POSTROUTING
+                  iptables -t mangle -D PREROUTING -j ztunnel-PREROUTING
+                  iptables -t mangle -X ztunnel-PREROUTING
+                  iptables -t mangle -D FORWARD -j ztunnel-FORWARD
+                  iptables -t mangle -X ztunnel-FORWARD
+                  iptables -t mangle -D INPUT -j ztunnel-INPUT
+                  iptables -t mangle -X ztunnel-INPUT
+
+                  ip route flush table 100
+                  ip route flush table 101
+                  ip route flush table 102
+
+                  ip rule del priority 100
+                  ip rule del priority 101
+                  ip rule del priority 102
+                  ip rule del priority 103
+
+                  ip link del name istioin
+                  ip link del name istioout
+
+                  ipset destroy ztunnel-pods-ips
+      volumes:
+        # Used to install CNI.
+        - name: cni-bin-dir
+          hostPath:
+            path: /opt/cni/bin
+        - name: cni-ambientconfig
+          hostPath:
+            path: /etc/ambient-config
+        - name: cni-net-dir
+          hostPath:
+            path: /etc/cni/net.d
+        # Used for UDS log
+        - name: cni-log-dir
+          hostPath:
+            path: /var/run/istio-cni
+

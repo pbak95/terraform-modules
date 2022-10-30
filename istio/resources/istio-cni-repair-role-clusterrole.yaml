@@ -1,0 +1,18 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: istio-cni-repair-role
+  labels:
+    app: istio-cni
+    release: istio
+    istio.io/rev: default
+    install.operator.istio.io/owning-resource: unknown
+    operator.istio.io/component: "Cni"
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "watch", "delete", "patch", "update" ]
+- apiGroups: [""]
+  resources: ["events"]
+  verbs: ["get", "list", "watch", "delete", "patch", "update", "create" ]
+

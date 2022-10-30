@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: istio
+  namespace: istio-system
+  labels:
+    istio.io/rev: default
+    install.operator.istio.io/owning-resource: unknown
+    operator.istio.io/component: "Pilot"
+    release: istio
+data:
+
+  # Configuration file for the mesh networks to be used by the Split Horizon EDS.
+  meshNetworks: |-
+    networks: {}
+
+  mesh: |-
+    ambientMesh:
+      mode: DEFAULT
+    defaultConfig:
+      discoveryAddress: istiod.istio-system.svc:15012
+      proxyMetadata:
+        ISTIO_META_ENABLE_HBONE: "true"
+      tracing:
+        zipkin:
+          address: zipkin.istio-system:9411
+    defaultProviders:
+      metrics:
+      - prometheus
+    enablePrometheusMerge: true
+    extensionProviders:
+    - name: prometheus
+      prometheus: {}
+    rootNamespace: istio-system
+    trustDomain: cluster.local
+

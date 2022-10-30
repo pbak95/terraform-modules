@@ -1,8 +1,9 @@
 locals {
-  manifests_path = "${path.module}/resources/generated-manifest.yaml"
+  crds_path = "${path.module}/resources/crds/*.yaml"
+  manifests_path = "${path.module}/resources/*.yaml"
 }
 
-resource "kubernetes_namespace" "istio-namespace" {
+resource "kubernetes_namespace" "istio_namespace" {
   metadata {
     annotations = {}
 
@@ -19,7 +20,14 @@ resource "kubernetes_namespace" "istio-namespace" {
   }
 }
 
-resource "kubernetes_manifest" "istio-manifests" {
-  manifest = yamldecode(file(local.manifests_path))
-  depends_on = [kubernetes_namespace.istio-namespace]
+resource "kubernetes_manifest" "istio_crds" {
+  for_each = fileset(path.module, local.crds_path)
+  manifest = yamldecode(file("${path.module}/resources/crds/${each.value}"))
+  depends_on = [kubernetes_namespace.istio_namespace]
+}
+
+resource "kubernetes_manifest" "istio_manifests" {
+  for_each = fileset(path.module, local.manifests_path)
+  manifest = yamldecode(file("${path.module}/resources/${each.value}"))
+  depends_on = [kubernetes_manifest.istio_crds]
 }
