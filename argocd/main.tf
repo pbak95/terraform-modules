@@ -11,7 +11,7 @@ resource "null_resource" "argocd_password_bcrypt" {
 }
 
 resource "helm_release" "argocd" {
-  name       = "argocd-${var.environment}"
+  name       = "argocd"
   repository = "https://argoproj.github.io/argo-helm"
   chart      = "argo-cd"
   version    = var.chart_version
