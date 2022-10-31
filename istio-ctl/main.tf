@@ -20,7 +20,7 @@ resource "null_resource" "istio" {
 
   # Changes to any instance of the cluster requires re-provisioning
   triggers = {
-    istio_system_namespace = kubernetes_namespace.istio_namespace.uid
+    istio_system_namespace = var.namespace
   }
 
   provisioner "local-exec" {
