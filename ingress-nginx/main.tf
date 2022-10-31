@@ -6,7 +6,7 @@ resource "helm_release" "ingress-nginx" {
 
   namespace = "kube-system"
 
-
+  #TODO prepare module to local kind env https://kind.sigs.k8s.io/docs/user/ingress/#ingress-nginx
   #TODO Remove image tag parameter after the bug is solved:  https://github.com/bitnami/charts/issues/12028
   set {
     name  = "image.tag" 

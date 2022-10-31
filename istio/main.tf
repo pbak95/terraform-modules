@@ -22,12 +22,12 @@ resource "kubernetes_namespace" "istio_namespace" {
 
 resource "kubernetes_manifest" "istio_crds" {
   for_each = fileset(path.module, local.crds_path)
-  manifest = yamldecode(file("${path.module}/resources/crds/${each.value}"))
+  manifest = yamldecode(file("${path.module}/${each.value}"))
   depends_on = [kubernetes_namespace.istio_namespace]
 }
 
 resource "kubernetes_manifest" "istio_manifests" {
   for_each = fileset(path.module, local.manifests_path)
-  manifest = yamldecode(file("${path.module}/resources/${each.value}"))
+  manifest = yamldecode(file("${path.module}/${each.value}"))
   depends_on = [kubernetes_manifest.istio_crds]
 }
