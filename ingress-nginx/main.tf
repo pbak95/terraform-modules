@@ -52,17 +52,17 @@ resource "helm_release" "ingress-nginx" {
     type  = "string"
   }
 
-  set {
-    name  = "hostNetwork"
-    value = "false"
-    type  = "string"
-  }
+#  set {
+#    name  = "hostNetwork"
+#    value = "false"
+#    type  = "string"
+#  }
 
-  set {
-    name  = "daemonset.useHostPort"
-    value = "true"
-    type  = "string"
-  }
+#  set {
+#    name  = "daemonset.useHostPort"
+#    value = "true"
+#    type  = "string"
+#  }
 
   set {
     name  = "metrics.enabled"
@@ -74,11 +74,11 @@ resource "helm_release" "ingress-nginx" {
     value = false //TODO detect if prometheus is installed and set this value
   }
 
-  set {
-    name  = "metrics.serviceMonitor.namespace"
-    value = var.monitoring_namespace
-    type  = "string"
-  }
+#  set {
+#    name  = "metrics.serviceMonitor.namespace"
+#    value = var.monitoring_namespace
+#    type  = "string"
+#  }
 
 
   set {
