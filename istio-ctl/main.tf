@@ -24,6 +24,6 @@ resource "null_resource" "istio" {
   }
 
   provisioner "local-exec" {
-    command = "./resources/istioctl install --set profile=ambient"
+    command = "./resources/istioctl install --set profile=ambient -i ${var.namespace}"
   }
 }
