@@ -15,7 +15,7 @@ resource "helm_release" "ingress-nginx" {
 
   set {
     name  = "replicaCount"
-    value = "2"
+    value = "1"
   }
 
 #  set {
