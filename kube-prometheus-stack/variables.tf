@@ -8,6 +8,7 @@ variable "namespace" {
 
 variable "argocd_project" {
   type = string
+  default = "default"
 }
 
 variable "cluster" {
