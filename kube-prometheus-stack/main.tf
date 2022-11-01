@@ -13,8 +13,8 @@ resource "argocd_application" "monitoring" {
       namespace = var.namespace
     }
     source {
-      repo_url        = "https://github.com/prometheus-community/helm-charts.git"
-      path            = "charts/kube-prometheus-stack"
+      repo_url        = "https://prometheus-community.github.io/helm-charts"
+      chart           = "prometheus-community/kube-prometheus-stack"
       target_revision = var.chart_version
       helm {
         skip_crds    = true
