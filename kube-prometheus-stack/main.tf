@@ -17,7 +17,6 @@ resource "argocd_application" "kube_prometheus_stack" {
       chart           = "kube-prometheus-stack"
       target_revision = var.chart_version
       helm {
-        skip_crds    = true
         release_name = "kube-prometheus-stack"
         parameter {
           name  = "grafana.adminUser"
