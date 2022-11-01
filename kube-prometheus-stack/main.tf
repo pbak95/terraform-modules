@@ -14,7 +14,7 @@ resource "argocd_application" "kube_prometheus_stack" {
     }
     source {
       repo_url        = "https://prometheus-community.github.io/helm-charts"
-      chart           = "prometheus-community/kube-prometheus-stack"
+      chart           = "kube-prometheus-stack"
       target_revision = var.chart_version
       helm {
         skip_crds    = true
