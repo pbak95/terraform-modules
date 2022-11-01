@@ -1,3 +1,12 @@
+locals {
+  crds_path = "${path.module}/crds/*.yaml"
+}
+
+resource "kubernetes_manifest" "kube_prometheus_stack_crds" {
+  for_each = fileset(path.module, local.crds_path)
+  manifest = yamldecode(file("${path.module}/${each.value}"))
+}
+
 resource "argocd_application" "kube_prometheus_stack" {
   metadata {
     name      = "kube-prometheus-stack-${var.cluster}"
@@ -17,6 +26,7 @@ resource "argocd_application" "kube_prometheus_stack" {
       chart           = "kube-prometheus-stack"
       target_revision = var.chart_version
       helm {
+        skip_crds    = true
         release_name = "kube-prometheus-stack"
         parameter {
           name  = "grafana.adminUser"
@@ -109,4 +119,6 @@ resource "argocd_application" "kube_prometheus_stack" {
   lifecycle {
     ignore_changes = [metadata]
   }
+
+  depends_on = [kubernetes_manifest.kube_prometheus_stack_crds]
 }
