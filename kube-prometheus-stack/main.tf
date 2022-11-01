@@ -1,6 +1,6 @@
-resource "argocd_application" "monitoring" {
+resource "argocd_application" "kube_prometheus_stack" {
   metadata {
-    name      = "monitoring-${var.cluster}"
+    name      = "kube-prometheus-stack-${var.cluster}"
     namespace = var.namespace
     labels    = var.labels
   }
