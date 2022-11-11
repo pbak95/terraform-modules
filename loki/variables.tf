@@ -3,7 +3,7 @@ variable "chart_version" {
 }
 
 variable "destination_server" {
-  type = string
+  type    = string
   default = "https://kubernetes.default.svc"
 }
 
@@ -17,7 +17,7 @@ variable "namespace" {
 }
 
 variable "argocd_project" {
-  type = string
+  type    = string
   default = "default"
 }
 
@@ -27,8 +27,8 @@ variable "retention_enabled" {
 }
 
 variable "auth_enabled" {
-  type    = bool
-  default = false
+  type        = bool
+  default     = false
   description = "If true loki runs in multi-tenant mode and X-Scope-OrgID http header is required in communication with loki"
 }
 
@@ -54,9 +54,30 @@ variable "limits_config" {
     ingestion_burst_size_mb = string
   })
   description = "Loki limits configuration"
-  default = {
+  default     = {
     retention_period        = "240h" # 10 days
     ingestion_rate_mb       = "6"
-    ingestion_burst_size_mb = "8" //should match expected maximum logs size in single push requuest, current fluend config is 8MB
+    ingestion_burst_size_mb = "8"
+    //should match expected maximum logs size in single push requuest, current fluend config is 8MB
+  }
+}
+
+variable "read" {
+  type = object({
+    replicas = number
+  })
+  description = "Configuration for the read"
+  default     = {
+    replicas = 2
+  }
+}
+
+variable "write" {
+  type = object({
+    replicas = number
+  })
+  description = "Configuration for the write"
+  default     = {
+    replicas = 2
   }
 }

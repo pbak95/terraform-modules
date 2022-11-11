@@ -23,6 +23,16 @@ resource "argocd_application" "loki" {
         release_name = "loki"
 
         parameter {
+          name  = "read.replicas"
+          value = var.read.replicas
+        }
+
+        parameter {
+          name  = "write.replicas"
+          value = var.write.replicas
+        }
+
+        parameter {
           name  = "loki.server.grpc_server_max_recv_msg_size"
           value = "8388608"
         }
@@ -47,6 +57,10 @@ resource "argocd_application" "loki" {
         parameter {
           name  = "loki.limits_config.ingestion_burst_size_mb"
           value = var.limits_config.ingestion_burst_size_mb
+        }
+        parameter {
+          name  = "gateway.enabled"
+          value = false
         }
         parameter {
           name  = "ingress.enabled"
