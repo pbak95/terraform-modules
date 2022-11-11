@@ -2,10 +2,6 @@ variable "namespace" {
   type = string
 }
 
-variable "environment" {
-  type = string
-}
-
 variable "chart_version" {
   type = string
 }
@@ -20,4 +16,9 @@ variable "argocd_project" {
 
 variable "cluster" {
   type = string
+}
+
+variable "labels" {
+  type    = map(string)
+  default = {}
 }

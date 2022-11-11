@@ -1,12 +1,8 @@
 resource "argocd_application" "logging-operator" {
   metadata {
-    name      = "logging-operator-${var.environment}-${var.cluster}"
+    name      = "logging-operator-${var.cluster}"
     namespace = var.namespace
-    labels = {
-      environment = var.environment
-      cluster     = var.cluster
-      namespace   = var.namespace
-    }
+    labels    = var.labels
   }
   wait = true
   timeouts {
@@ -22,7 +18,7 @@ resource "argocd_application" "logging-operator" {
       helm {
         skip_crds    = true
         value_files  = ["values.yaml"]
-        release_name = "logging-operator-${var.environment}"
+        release_name = "logging-operator"
       }
     }
     destination {
