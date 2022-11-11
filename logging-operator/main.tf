@@ -16,7 +16,6 @@ resource "argocd_application" "logging-operator" {
       chart           = "logging-operator"
       target_revision = var.chart_version
       helm {
-        skip_crds    = true
         value_files  = ["values.yaml"]
         release_name = "logging-operator"
       }
