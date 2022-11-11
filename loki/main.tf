@@ -23,43 +23,29 @@ resource "argocd_application" "loki" {
         release_name = "loki"
 
         parameter {
-          name  = "persistence.enabled"
-          value = "true"
-        }
-
-        parameter {
-          name  = "config.server.grpc_server_max_recv_msg_size"
+          name  = "loki.server.grpc_server_max_recv_msg_size"
           value = "8388608"
         }
 
         parameter {
-          name  = "persistence.size"
-          value = "5Gi"
-        }
-        parameter {
-          name  = "persistence.accessMode[0]"
-          value = "ReadWriteOnce"
-        }
-
-        parameter {
-          name  = "config.auth_enabled"
+          name  = "loki.auth_enabled"
           value = var.auth_enabled
         }
 
         parameter {
-          name  = "config.compactor.retention_enabled"
+          name  = "loki.compactor.retention_enabled"
           value = var.retention_enabled
         }
         parameter {
-          name  = "config.limits_config.retention_period"
+          name  = "loki.limits_config.retention_period"
           value = var.limits_config.retention_period
         }
         parameter {
-          name  = "config.limits_config.ingestion_rate_mb"
+          name  = "loki.limits_config.ingestion_rate_mb"
           value = var.limits_config.ingestion_rate_mb
         }
         parameter {
-          name  = "config.limits_config.ingestion_burst_size_mb"
+          name  = "loki.limits_config.ingestion_burst_size_mb"
           value = var.limits_config.ingestion_burst_size_mb
         }
         parameter {
