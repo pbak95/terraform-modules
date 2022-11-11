@@ -1,6 +1,6 @@
 resource "argocd_application" "logging-operator" {
   metadata {
-    name      = "logging-operator-${var.cluster}"
+    name      = "logging-operator"
     namespace = var.namespace
     labels    = var.labels
   }

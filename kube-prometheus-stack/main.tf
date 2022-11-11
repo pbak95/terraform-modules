@@ -9,7 +9,7 @@ resource "kubernetes_manifest" "kube_prometheus_stack_crds" {
 
 resource "argocd_application" "kube_prometheus_stack" {
   metadata {
-    name      = "kube-prometheus-stack-${var.cluster}"
+    name      = "kube-prometheus-stack"
     namespace = var.namespace
     labels    = var.labels
   }

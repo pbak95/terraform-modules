@@ -1,6 +1,6 @@
 resource "argocd_application" "loki" {
   metadata {
-    name      = "loki-${var.cluster}"
+    name      = "loki"
     namespace = var.namespace
     labels = var.labels
   }

@@ -8,15 +8,12 @@ variable "chart_version" {
 
 variable "destination_server" {
   type = string
+  default = "https://kubernetes.default.svc"
 }
 
 variable "argocd_project" {
   type = string
   default = "default"
-}
-
-variable "cluster" {
-  type = string
 }
 
 variable "labels" {

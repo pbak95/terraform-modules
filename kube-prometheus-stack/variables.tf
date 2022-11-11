@@ -11,12 +11,9 @@ variable "argocd_project" {
   default = "default"
 }
 
-variable "cluster" {
-  type = string
-}
-
 variable "destination_server" {
   type = string
+  default = "https://kubernetes.default.svc"
 }
 
 variable "labels" {
