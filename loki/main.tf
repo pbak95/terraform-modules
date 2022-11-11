@@ -133,14 +133,10 @@ resource "argocd_application" "loki" {
 resource "random_password" "loki_password" {
   length  = 20
   special = false
-
-  count = var.ingress.enabled ? 1 : 0
 }
 
 resource "htpasswd_password" "hash" {
   password = random_password.loki_password.result
-
-  count = var.ingress.enabled ? 1 : 0
 }
 
 resource "kubernetes_secret" "loki_auth" {
