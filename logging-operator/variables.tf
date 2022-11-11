@@ -12,6 +12,7 @@ variable "destination_server" {
 
 variable "argocd_project" {
   type = string
+  default = "default"
 }
 
 variable "cluster" {
