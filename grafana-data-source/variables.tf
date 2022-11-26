@@ -11,16 +11,15 @@ variable "url" {
   type = string
 }
 
-variable "username" {
-  type      = string
-  default   = ""
-  sensitive = true
-}
-
-variable "password" {
-  type      = string
-  default   = ""
-  sensitive = true
+variable "credentials" {
+  type = object({
+    username = string
+    password = string
+  })
+  default = {
+    username = ""
+    password = ""
+  }
 }
 
 variable "basic_auth_enabled" {
@@ -34,6 +33,6 @@ variable "tls_skip_verify" {
 }
 
 variable "http_headers" {
-  type = map(string)
+  type    = map(string)
   default = {}
 }

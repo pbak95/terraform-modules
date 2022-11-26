@@ -1,5 +1,5 @@
 output "url" {
-  value       = var.ingress.enabled ? "https://${var.ingress.host}" : "http://loki.${var.namespace}.svc.cluster.local:3100"
+  value       = var.ingress.enabled ? "https://${var.ingress.host}" : "http://loki-read.${var.namespace}.svc.cluster.local:3100"
   description = "Loki HTTPS endpoint in case ingress is enabled. HTTP cluster local endpoint in case ingress is disabled."
 }
 
